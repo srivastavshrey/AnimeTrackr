@@ -4,10 +4,13 @@ const connect = require('../db');
 
 // Get all users
 router.get('/', async (req, res) => {
-  console.log(req)
+  try{
   const db = await connect();
   const users = await db.collection('users').find().toArray();
   res.json(users);
+  }catch(err){
+    console.log(err)
+  }
 });
 
 // Get a single user by ID
@@ -19,11 +22,16 @@ router.get('/:id', async (req, res) => {
 
 // Create a new user
 router.post('/', async (req, res) => {
+  try{
   const db = await connect();
   const user = req.body;
-  await db.collection.c
+  await db.collection('users').createIndex({ "email": 1 },{ unique: true })
+  await db.collection('users').createIndex({ "username":1 },{ unique: true })
   await db.collection('users').insertOne(user);
   res.status(200).json("User created successfully");
+  }catch(err){
+    res.status(400)
+  }
 });
 
 // Update a user
